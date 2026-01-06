@@ -9,7 +9,7 @@ interface IpLookupListProps {
 
 export function IpLookupList({ rows, updateRow }: IpLookupListProps) {
   return (
-    <Stack spacing={1} sx={{ width: "100%", overflowX: "hidden" }}>
+    <Stack spacing={1} sx={{ width: "100%" }}>
       {rows.map((row, index) => (
         <IpLookupRow
           key={row.id}

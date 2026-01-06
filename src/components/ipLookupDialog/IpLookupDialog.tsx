@@ -24,10 +24,9 @@ const styles = {
   },
   dialogContent: {
     p: 3,
-    height: 380,
     display: "flex",
     flexDirection: "column",
-    minHeight: 0,
+    overflow: "hidden",
   },
   header: {
     direction: "row",
@@ -53,8 +52,11 @@ const styles = {
     backgroundColor: colors.primary,
     "&:hover": { backgroundColor: colors.primaryHover },
     fontWeight: 600,
+    "&:focus, &:focus-visible": {
+      outline: "none",
+      boxShadow: `0 0 0 2px ${colors.focus}`,
+    },
     textTransform: "none",
-    "&:focus, &:focus-visible": { outline: "none" },
     px: 2,
     py: 0.5,
     borderRadius: 1,
@@ -72,15 +74,19 @@ const styles = {
     width: "100%",
     my: 1,
   },
+  dialogPaper: {
+    height: 380,
+    overflow: "hidden",
+  },
   listScroll: {
     width: "100%",
-    flex: 1,
     minHeight: 0,
+    flex: "1 1 auto",
     overflowY: "auto",
     overflowX: "hidden",
     pr: 1,
     pb: 1,
-    mt: 2,
+    pt: 2,
   },
 } as const;
 
@@ -107,7 +113,13 @@ export function IpLookupDialog() {
 
   return (
     <Box sx={styles.page}>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{ sx: styles.dialogPaper }}
+      >
         <DialogContent sx={styles.dialogContent}>
           <Stack {...styles.header}>
             <Typography variant="h5" fontWeight={700}>
@@ -123,7 +135,7 @@ export function IpLookupDialog() {
 
           <Stack sx={styles.contentTop} spacing={2}>
             <Typography variant="body2" sx={styles.helperText}>
-              Enter one or more IP addresses and get their country.
+              Enter one or more IP addresses and get their country
             </Typography>
 
             <Button

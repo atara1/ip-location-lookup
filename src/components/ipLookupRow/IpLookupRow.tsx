@@ -27,6 +27,20 @@ const styles = {
     "& input:-webkit-autofill": {
       WebkitBoxShadow: "0 0 0 1000px #fff inset",
     },
+    "& .MuiOutlinedInput-root": {
+      height: 30,
+
+      "& fieldset": {
+        borderColor: colors.border,
+        borderWidth: 2,
+      },
+      "&:hover fieldset": {
+        borderColor: colors.focus,
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: colors.focus,
+      },
+    },
   },
   rightArea: {
     display: "flex",
