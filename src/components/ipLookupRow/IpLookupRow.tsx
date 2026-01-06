@@ -115,13 +115,16 @@ export function IpLookupRow({
       />
 
       <Box sx={styles.rightArea}>
-        {row.status === "loading" && <Box sx={styles.loader} />}
+        {(row.status === "loading" ||
+          (row.status === "success" && !localTime)) && (
+          <Box sx={styles.loader} />
+        )}
 
         {row.status === "error" && (
           <Typography color="error">{row.error}</Typography>
         )}
 
-        {row.status === "success" && (
+        {row.status === "success" && localTime && (
           <>
             {flagUrl && (
               <Box
