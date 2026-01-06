@@ -3,7 +3,7 @@ import { act } from "react";
 import userEvent from "@testing-library/user-event";
 import { IpLookupDialog } from "./IpLookupDialog";
 
-const ipLookupListMock = jest.fn();
+let ipLookupListMock = jest.fn();
 
 jest.mock("../ipLookupList/IpLookupList", () => ({
   IpLookupList: (props: any) => {
@@ -23,7 +23,7 @@ describe("IpLookupDialog", () => {
     ipLookupListMock.mockClear();
   });
 
-  test("renders title and helper text", () => {
+  it("renders title and helper text", () => {
     render(<IpLookupDialog />);
 
     expect(screen.getByText("IP Lookup")).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe("IpLookupDialog", () => {
     expect(screen.getByTestId("ip-lookup-list")).toBeInTheDocument();
   });
 
-  test("initially renders with one row", () => {
+  it("initially renders with one row", () => {
     render(<IpLookupDialog />);
 
     const props = getLatestListProps();
@@ -46,7 +46,7 @@ describe("IpLookupDialog", () => {
     expect(typeof props.updateRow).toBe("function");
   });
 
-  test("clicking Add adds a new row", async () => {
+  it("clicking Add adds a new row", async () => {
     const user = userEvent.setup();
     render(<IpLookupDialog />);
 
@@ -60,7 +60,7 @@ describe("IpLookupDialog", () => {
     );
   });
 
-  test("clicking Close (X) hides the dialog", async () => {
+  it("clicking Close (X) hides the dialog", async () => {
     const user = userEvent.setup();
     render(<IpLookupDialog />);
 
@@ -74,7 +74,7 @@ describe("IpLookupDialog", () => {
     });
   });
 
-  test("Add button becomes disabled when any row is loading, then re-enabled", async () => {
+  it("Add button becomes disabled when any row is loading, then re-enabled", async () => {
     render(<IpLookupDialog />);
 
     const addBtn = screen.getByRole("button", { name: /^add$/i });
@@ -97,7 +97,7 @@ describe("IpLookupDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeEnabled();
   });
 
-  test("updateRow updates the correct row by id", async () => {
+  it("updateRow updates the correct row by id", async () => {
     render(<IpLookupDialog />);
 
     const props = getLatestListProps();

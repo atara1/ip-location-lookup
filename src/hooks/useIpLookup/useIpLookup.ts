@@ -1,13 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { fetchIpLocation } from "../api/ipApi";
+import { fetchIpLocation } from "../../api/ipApi/ipApi";
+import type { IpLookupResult } from "../../types";
 
-type IpLookupResult = {
-  country: string;
-  countryCode?: string;
-  timezone: string;
+type UseIpLookupReturn = {
+  lookup: (ip: string) => Promise<IpLookupResult>;
 };
 
-export function useIpLookup() {
+export function useIpLookup(): UseIpLookupReturn {
   const queryClient = useQueryClient();
 
   const lookup = async (ip: string): Promise<IpLookupResult> => {

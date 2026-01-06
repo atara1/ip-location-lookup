@@ -1,4 +1,6 @@
-export async function fetchIpLocation(ip: string) {
+import type { IpLookupResult } from "../../types";
+
+export async function fetchIpLocation(ip: string): Promise<IpLookupResult> {
   const res = await fetch(`https://ipapi.co/${ip}/json/`);
   if (!res.ok) throw new Error("Network error");
   const data = await res.json();

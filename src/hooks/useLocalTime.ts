@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useLocalTime(timezone?: string) {
+export function useLocalTime(timezone?: string): string {
   const [time, setTime] = useState<string>("");
   useEffect(() => {
     if (!timezone) return;

@@ -1,9 +1,9 @@
 import { TextField, Stack, Typography, Box, Avatar } from "@mui/material";
 import type { IpLookupRowModel } from "../../types";
-import { useIpLookup } from "../../hooks/useIpLookup";
+import { useIpLookup } from "../../hooks/useIpLookup/useIpLookup";
 import { useLocalTime } from "../../hooks/useLocalTime";
 import { colors } from "../../theme/colors";
-import { validateIpv4 } from "../../utils/ipValidation";
+import { validateIpv4 } from "../../utils/ipValidation/ipValidation";
 
 interface IpLookupRowProps {
   row: IpLookupRowModel;
@@ -63,7 +63,7 @@ export function IpLookupRow({
     ? `https://flagcdn.com/24x18/${row.countryCode.toLowerCase()}.png`
     : undefined;
 
-  const onBlur = async () => {
+  const onBlur = async (): Promise<void> => {
     const result = validateIpv4(row.ip);
     if (!result.ok) {
       onUpdate({ status: "error", error: result.error });
@@ -81,9 +81,8 @@ export function IpLookupRow({
         timezone: result.timezone,
         error: undefined,
       });
-    } catch (e) {
+    } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Something went wrong";
-
       onUpdate({ status: "error", error: message });
     }
   };

@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { IpLookupRow } from "./IpLookupRow";
 import type { IpLookupRowModel } from "../../types";
 
-const lookupMock = jest.fn();
+let lookupMock = jest.fn();
 
-jest.mock("../../hooks/useIpLookup", () => ({
+jest.mock("../../hooks/useIpLookup/useIpLookup", () => ({
   useIpLookup: () => ({ lookup: lookupMock }),
 }));
 
@@ -15,7 +15,7 @@ jest.mock("../../hooks/useLocalTime", () => ({
 }));
 
 const validateIpv4Mock = jest.fn();
-jest.mock("../../utils/ipValidation", () => ({
+jest.mock("../../utils/ipValidation/ipValidation", () => ({
   validateIpv4: (value: string) => validateIpv4Mock(value),
 }));
 
@@ -40,7 +40,7 @@ describe("IpLookupRow", () => {
     useLocalTimeMock.mockReturnValue("10:00");
   });
 
-  test("renders index avatar and textbox", () => {
+  it("renders index avatar and textbox", () => {
     render(
       <IpLookupRow
         row={makeRow()}
@@ -54,7 +54,7 @@ describe("IpLookupRow", () => {
     expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
-  test("calls onChange when typing", async () => {
+  it("calls onChange when typing", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
 
@@ -71,7 +71,7 @@ describe("IpLookupRow", () => {
     expect(onChange).toHaveBeenCalled();
   });
 
-  test("input is disabled when row.status is loading", () => {
+  it("input is disabled when row.status is loading", () => {
     render(
       <IpLookupRow
         row={makeRow({ status: "loading", ip: "8.8.8.8" })}
@@ -85,7 +85,7 @@ describe("IpLookupRow", () => {
   });
 
   describe("onBlur", () => {
-    test("invalid ip will sets error and does not call lookup", async () => {
+    it("invalid ip will sets error and does not call lookup", async () => {
       const user = userEvent.setup();
       const onUpdate = jest.fn();
 
@@ -112,7 +112,7 @@ describe("IpLookupRow", () => {
       expect(lookupMock).not.toHaveBeenCalled();
     });
 
-    test("valid ip will sets loading then success with lookup result", async () => {
+    it("valid ip will sets loading then success with lookup result", async () => {
       const user = userEvent.setup();
       const onUpdate = jest.fn();
 
@@ -156,7 +156,7 @@ describe("IpLookupRow", () => {
       });
     });
 
-    test("lookup throws Error will sets error with message", async () => {
+    it("lookup throws Error will sets error with message", async () => {
       const user = userEvent.setup();
       const onUpdate = jest.fn();
 
@@ -189,7 +189,7 @@ describe("IpLookupRow", () => {
       });
     });
 
-    test("lookup throws non-Error will sets generic error", async () => {
+    it("lookup throws non-Error will sets generic error", async () => {
       const user = userEvent.setup();
       const onUpdate = jest.fn();
 
@@ -218,7 +218,7 @@ describe("IpLookupRow", () => {
     });
   });
 
-  test("renders error text when status is error", () => {
+  it("renders error text when status is error", () => {
     render(
       <IpLookupRow
         row={makeRow({ status: "error", error: "Invalid IPv4" })}
@@ -231,7 +231,7 @@ describe("IpLookupRow", () => {
     expect(screen.getByText("Invalid IPv4")).toBeInTheDocument();
   });
 
-  test("renders flag image and local time when status is success", () => {
+  it("renders flag image and local time when status is success", () => {
     useLocalTimeMock.mockReturnValue("12:34");
 
     render(
@@ -257,7 +257,7 @@ describe("IpLookupRow", () => {
     );
   });
 
-  test("renders loader box when status is loading", () => {
+  it("renders loader box when status is loading", () => {
     render(
       <IpLookupRow
         row={makeRow({ status: "loading" })}

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { IpLookupList } from "./IpLookupList";
 import type { IpLookupRowModel } from "../../types";
 
-const rowMock = jest.fn();
+let rowMock = jest.fn();
 
 jest.mock("../ipLookupRow/IpLookupRow", () => ({
   IpLookupRow: (props: any) => {
@@ -16,7 +16,7 @@ describe("IpLookupList", () => {
     rowMock.mockClear();
   });
 
-  test("renders one IpLookupRow per row", () => {
+  it("renders one IpLookupRow per row", () => {
     const rows: IpLookupRowModel[] = [
       { id: "1", ip: "", status: "idle" } as IpLookupRowModel,
       { id: "2", ip: "", status: "idle" } as IpLookupRowModel,
@@ -30,7 +30,7 @@ describe("IpLookupList", () => {
     expect(rowMock).toHaveBeenCalledTimes(2);
   });
 
-  test("onChange to updateRow with row id", () => {
+  it("onChange to updateRow with row id", () => {
     const rows: IpLookupRowModel[] = [
       { id: "abc", ip: "", status: "idle" } as IpLookupRowModel,
     ];
@@ -44,7 +44,7 @@ describe("IpLookupList", () => {
     expect(updateRow).toHaveBeenCalledWith("abc", { ip: "8.8.8.8" });
   });
 
-  test("onUpdate to updateRow with row id", () => {
+  it("onUpdate to updateRow with row id", () => {
     const rows: IpLookupRowModel[] = [
       { id: "abc", ip: "", status: "idle" } as IpLookupRowModel,
     ];
