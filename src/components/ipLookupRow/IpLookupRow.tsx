@@ -1,10 +1,4 @@
-import {
-  TextField,
-  Stack,
-  Typography,
-  Box,
-  Avatar,
-} from "@mui/material";
+import { TextField, Stack, Typography, Box, Avatar } from "@mui/material";
 import type { IpLookupRowModel } from "../../types";
 import { useIpLookup } from "../../hooks/useIpLookup";
 import { useLocalTime } from "../../hooks/useLocalTime";
@@ -87,12 +81,10 @@ export function IpLookupRow({
         timezone: result.timezone,
         error: undefined,
       });
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        onUpdate({ status: "error", error: e.message });
-      } else {
-        onUpdate({ status: "error", error: "Something went wrong" });
-      }
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Something went wrong";
+
+      onUpdate({ status: "error", error: message });
     }
   };
 

@@ -4,9 +4,10 @@ and see their country, flag, and time.
 
 ## Tech Stack
 - React + TypeScript
-- Vite
+- React Query
 - Material UI (MUI)
 - Jest + React Testing Library
+- Vite
 
 ## UI & Styling
 
@@ -51,6 +52,9 @@ Error cases such as:
 - Reserved IP addresses
 - Network errors  
 are handled explicitly and reflected in the UI.
+
+### API Caching with React Query
+This project uses React Query to handle API data fetching and caching for IP.
 
 ## Component Structure
 The main UI is split into small, focused components:

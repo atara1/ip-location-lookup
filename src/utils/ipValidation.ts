@@ -7,10 +7,10 @@ const ipv4Regex =
 
 export function validateIpv4(input: string): IpValidationResult {
   const value = input.trim();
-  if (!value) return { ok: false, error: 'IP is required' };
+  if (!value) return { ok: false, error: "IP is required" };
 
   if (!ipv4Regex.test(value)) {
-    return { ok: false, error: 'Invalid IPv4 address' };
+    return { ok: false, error: "Invalid IPv4 address" };
   }
 
   return { ok: true, value };

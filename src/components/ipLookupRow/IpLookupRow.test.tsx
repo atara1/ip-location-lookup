@@ -218,44 +218,44 @@ describe("IpLookupRow", () => {
     });
   });
 
-    test("renders error text when status is error", () => {
-      render(
-        <IpLookupRow
-          row={makeRow({ status: "error", error: "Invalid IPv4" })}
-          index={0}
-          onChange={jest.fn()}
-          onUpdate={jest.fn()}
-        />
-      );
+  test("renders error text when status is error", () => {
+    render(
+      <IpLookupRow
+        row={makeRow({ status: "error", error: "Invalid IPv4" })}
+        index={0}
+        onChange={jest.fn()}
+        onUpdate={jest.fn()}
+      />
+    );
 
-      expect(screen.getByText("Invalid IPv4")).toBeInTheDocument();
-    });
+    expect(screen.getByText("Invalid IPv4")).toBeInTheDocument();
+  });
 
-    test("renders flag image and local time when status is success", () => {
-      useLocalTimeMock.mockReturnValue("12:34");
+  test("renders flag image and local time when status is success", () => {
+    useLocalTimeMock.mockReturnValue("12:34");
 
-      render(
-        <IpLookupRow
-          row={makeRow({
-            status: "success",
-            country: "United States",
-            countryCode: "US",
-            timezone: "America/New_York",
-          })}
-          index={0}
-          onChange={jest.fn()}
-          onUpdate={jest.fn()}
-        />
-      );
+    render(
+      <IpLookupRow
+        row={makeRow({
+          status: "success",
+          country: "United States",
+          countryCode: "US",
+          timezone: "America/New_York",
+        })}
+        index={0}
+        onChange={jest.fn()}
+        onUpdate={jest.fn()}
+      />
+    );
 
-      expect(screen.getByText("12:34")).toBeInTheDocument();
+    expect(screen.getByText("12:34")).toBeInTheDocument();
 
-      const img = screen.getByRole("img", { name: /flag/i });
-      expect(img).toHaveAttribute(
-        "src",
-        expect.stringContaining("https://flagcdn.com/24x18/us.png")
-      );
-    });
+    const img = screen.getByRole("img", { name: /flag/i });
+    expect(img).toHaveAttribute(
+      "src",
+      expect.stringContaining("https://flagcdn.com/24x18/us.png")
+    );
+  });
 
   test("renders loader box when status is loading", () => {
     render(

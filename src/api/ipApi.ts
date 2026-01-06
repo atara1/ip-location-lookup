@@ -1,5 +1,4 @@
 export async function fetchIpLocation(ip: string) {
-  
   const res = await fetch(`https://ipapi.co/${ip}/json/`);
   if (!res.ok) throw new Error("Network error");
   const data = await res.json();

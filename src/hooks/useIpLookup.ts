@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchIpLocation } from "../api/ipApi";
 
- type IpLookupResult = {
+type IpLookupResult = {
   country: string;
   countryCode?: string;
   timezone: string;
@@ -16,7 +16,6 @@ export function useIpLookup() {
     return queryClient.fetchQuery({
       queryKey: ["ipLocation", key],
       queryFn: () => fetchIpLocation(key),
-     
     });
   };
 
