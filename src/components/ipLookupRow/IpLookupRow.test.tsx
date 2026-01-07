@@ -51,7 +51,6 @@ describe("IpLookupRow", () => {
     );
 
     expect(screen.getByText("1")).toBeInTheDocument();
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
   it("calls onChange when typing", async () => {

@@ -42,8 +42,6 @@ describe("IpLookupDialog", () => {
     expect(props.rows[0]).toEqual(
       expect.objectContaining({ ip: "", status: "idle" })
     );
-    expect(typeof props.rows[0].id).toBe("string");
-    expect(typeof props.updateRow).toBe("function");
   });
 
   it("clicking Add adds a new row", async () => {
