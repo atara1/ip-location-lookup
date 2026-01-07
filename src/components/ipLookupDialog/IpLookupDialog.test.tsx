@@ -3,7 +3,7 @@ import { act } from "react";
 import userEvent from "@testing-library/user-event";
 import { IpLookupDialog } from "./IpLookupDialog";
 
-let ipLookupListMock = jest.fn();
+const ipLookupListMock = jest.fn();
 
 jest.mock("../ipLookupList/IpLookupList", () => ({
   IpLookupList: (props: any) => {
@@ -28,7 +28,7 @@ describe("IpLookupDialog", () => {
 
     expect(screen.getByText("IP Lookup")).toBeInTheDocument();
     expect(
-      screen.getByText("Enter one or more IP addresses and get their country.")
+      screen.getByText("Enter one or more IP addresses and get their country")
     ).toBeInTheDocument();
 
     expect(screen.getByTestId("ip-lookup-list")).toBeInTheDocument();

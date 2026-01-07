@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { IpLookupRow } from "./IpLookupRow";
 import type { IpLookupRowModel } from "../../types";
 
-let lookupMock = jest.fn();
+const lookupMock = jest.fn();
 
 jest.mock("../../hooks/useIpLookup/useIpLookup", () => ({
   useIpLookup: () => ({ lookup: lookupMock }),

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { IpLookupList } from "./IpLookupList";
 import type { IpLookupRowModel } from "../../types";
 
-let rowMock = jest.fn();
+const rowMock = jest.fn();
 
 jest.mock("../ipLookupRow/IpLookupRow", () => ({
   IpLookupRow: (props: any) => {
