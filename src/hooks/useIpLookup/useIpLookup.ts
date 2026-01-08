@@ -15,6 +15,8 @@ export function useIpLookup(): UseIpLookupReturn {
     return queryClient.fetchQuery({
       queryKey: ["ipLocation", key],
       queryFn: () => fetchIpLocation(key),
+       staleTime: Infinity,
+      retry: false,
     });
   };
 

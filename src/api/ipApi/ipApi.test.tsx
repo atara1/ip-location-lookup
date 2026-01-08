@@ -23,9 +23,8 @@ describe("fetchIpLocation", () => {
       timezone: "America/Los_Angeles",
     });
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "https://ipapi.co/8.8.8.8/json/"
-    );
+  expect(globalThis.fetch).toHaveBeenCalledWith("/ipapi/8.8.8.8/json/");
+
   });
 
   it("throws error when response is not ok", async () => {

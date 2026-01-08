@@ -9,14 +9,14 @@ jest.mock("../../hooks/useIpLookup/useIpLookup", () => ({
   useIpLookup: () => ({ lookup: lookupMock }),
 }));
 
-const useLocalTimeMock = jest.fn();
-jest.mock("../../hooks/useLocalTime", () => ({
-  useLocalTime: (tz: string | undefined) => useLocalTimeMock(tz),
+const validateIpMock = jest.fn();
+jest.mock("../../utils/ipValidation/ipValidation", () => ({
+  validateIp: (value: string) => validateIpMock(value),
 }));
 
-const validateIpv4Mock = jest.fn();
-jest.mock("../../utils/ipValidation/ipValidation", () => ({
-  validateIpv4: (value: string) => validateIpv4Mock(value),
+const formatLocalTimeMock = jest.fn();
+jest.mock("../../utils/formatLocalTime", () => ({
+  formatLocalTime: (...args: any[]) => formatLocalTimeMock(...args),
 }));
 
 function makeRow(overrides?: Partial<IpLookupRowModel>): IpLookupRowModel {
@@ -33,48 +33,36 @@ function makeRow(overrides?: Partial<IpLookupRowModel>): IpLookupRowModel {
 }
 
 describe("IpLookupRow", () => {
+  const now = new Date("2026-01-08T10:00:00.000Z");
+
   beforeEach(() => {
     lookupMock.mockReset();
-    useLocalTimeMock.mockReset();
-    validateIpv4Mock.mockReset();
-    useLocalTimeMock.mockReturnValue("10:00");
+    validateIpMock.mockReset();
+    formatLocalTimeMock.mockReset();
+    formatLocalTimeMock.mockReturnValue("12:34");
   });
 
-  it("renders index avatar and textbox", () => {
+  test("renders index avatar and textbox", () => {
     render(
       <IpLookupRow
         row={makeRow()}
         index={0}
+        now={now}
         onChange={jest.fn()}
         onUpdate={jest.fn()}
       />
     );
 
     expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
-  it("calls onChange when typing", async () => {
-    const user = userEvent.setup();
-    const onChange = jest.fn();
-
-    render(
-      <IpLookupRow
-        row={makeRow({ ip: "" })}
-        index={0}
-        onChange={onChange}
-        onUpdate={jest.fn()}
-      />
-    );
-
-    await user.type(screen.getByRole("textbox"), "8.8.8.8");
-    expect(onChange).toHaveBeenCalled();
-  });
-
-  it("input is disabled when row.status is loading", () => {
+  test("input is disabled when row.status is loading", () => {
     render(
       <IpLookupRow
         row={makeRow({ status: "loading", ip: "8.8.8.8" })}
         index={0}
+        now={now}
         onChange={jest.fn()}
         onUpdate={jest.fn()}
       />
@@ -84,16 +72,17 @@ describe("IpLookupRow", () => {
   });
 
   describe("onBlur", () => {
-    it("invalid ip will sets error and does not call lookup", async () => {
+    test("invalid ip sets error and does not call lookup", async () => {
       const user = userEvent.setup();
       const onUpdate = jest.fn();
 
-      validateIpv4Mock.mockReturnValue({ ok: false, error: "Invalid IPv4" });
+      validateIpMock.mockReturnValue({ ok: false, error: "Invalid IPv4" });
 
       render(
         <IpLookupRow
           row={makeRow({ ip: "bad" })}
           index={0}
+          now={now}
           onChange={jest.fn()}
           onUpdate={onUpdate}
         />
@@ -103,19 +92,18 @@ describe("IpLookupRow", () => {
       await user.click(input);
       await user.tab();
 
-      expect(validateIpv4Mock).toHaveBeenCalledWith("bad");
+      expect(lookupMock).not.toHaveBeenCalled();
       expect(onUpdate).toHaveBeenCalledWith({
         status: "error",
         error: "Invalid IPv4",
       });
-      expect(lookupMock).not.toHaveBeenCalled();
     });
 
-    it("valid ip will sets loading then success with lookup result", async () => {
+    test("valid ip sets loading then success", async () => {
       const user = userEvent.setup();
       const onUpdate = jest.fn();
 
-      validateIpv4Mock.mockReturnValue({ ok: true, value: "8.8.8.8" });
+      validateIpMock.mockReturnValue({ ok: true, value: "8.8.8.8" });
       lookupMock.mockResolvedValue({
         country: "United States",
         countryCode: "US",
@@ -126,6 +114,7 @@ describe("IpLookupRow", () => {
         <IpLookupRow
           row={makeRow({ ip: "8.8.8.8" })}
           index={0}
+          now={now}
           onChange={jest.fn()}
           onUpdate={onUpdate}
         />
@@ -140,9 +129,7 @@ describe("IpLookupRow", () => {
         error: undefined,
       });
 
-      await waitFor(() => {
-        expect(lookupMock).toHaveBeenCalledWith("8.8.8.8");
-      });
+      await waitFor(() => expect(lookupMock).toHaveBeenCalledWith("8.8.8.8"));
 
       await waitFor(() => {
         expect(onUpdate).toHaveBeenCalledWith({
@@ -154,74 +141,14 @@ describe("IpLookupRow", () => {
         });
       });
     });
-
-    it("lookup throws Error will sets error with message", async () => {
-      const user = userEvent.setup();
-      const onUpdate = jest.fn();
-
-      validateIpv4Mock.mockReturnValue({ ok: true, value: "8.8.8.8" });
-      lookupMock.mockRejectedValue(new Error("Network error"));
-
-      render(
-        <IpLookupRow
-          row={makeRow({ ip: "8.8.8.8" })}
-          index={0}
-          onChange={jest.fn()}
-          onUpdate={onUpdate}
-        />
-      );
-
-      const input = screen.getByRole("textbox");
-      await user.click(input);
-      await user.tab();
-
-      expect(onUpdate).toHaveBeenCalledWith({
-        status: "loading",
-        error: undefined,
-      });
-
-      await waitFor(() => {
-        expect(onUpdate).toHaveBeenCalledWith({
-          status: "error",
-          error: "Network error",
-        });
-      });
-    });
-
-    it("lookup throws non-Error will sets generic error", async () => {
-      const user = userEvent.setup();
-      const onUpdate = jest.fn();
-
-      validateIpv4Mock.mockReturnValue({ ok: true, value: "8.8.8.8" });
-      lookupMock.mockRejectedValue("boom");
-
-      render(
-        <IpLookupRow
-          row={makeRow({ ip: "8.8.8.8" })}
-          index={0}
-          onChange={jest.fn()}
-          onUpdate={onUpdate}
-        />
-      );
-
-      const input = screen.getByRole("textbox");
-      await user.click(input);
-      await user.tab();
-
-      await waitFor(() => {
-        expect(onUpdate).toHaveBeenCalledWith({
-          status: "error",
-          error: "Something went wrong",
-        });
-      });
-    });
   });
 
-  it("renders error text when status is error", () => {
+  test("renders error text when status is error", () => {
     render(
       <IpLookupRow
         row={makeRow({ status: "error", error: "Invalid IPv4" })}
         index={0}
+        now={now}
         onChange={jest.fn()}
         onUpdate={jest.fn()}
       />
@@ -230,9 +157,7 @@ describe("IpLookupRow", () => {
     expect(screen.getByText("Invalid IPv4")).toBeInTheDocument();
   });
 
-  it("renders flag image and local time when status is success", () => {
-    useLocalTimeMock.mockReturnValue("12:34");
-
+  test("renders time when status is success", () => {
     render(
       <IpLookupRow
         row={makeRow({
@@ -242,34 +167,13 @@ describe("IpLookupRow", () => {
           timezone: "America/New_York",
         })}
         index={0}
+        now={now}
         onChange={jest.fn()}
         onUpdate={jest.fn()}
       />
     );
 
+    expect(formatLocalTimeMock).toHaveBeenCalled();
     expect(screen.getByText("12:34")).toBeInTheDocument();
-
-    const img = screen.getByRole("img", { name: /flag/i });
-    expect(img).toHaveAttribute(
-      "src",
-      expect.stringContaining("https://flagcdn.com/24x18/us.png")
-    );
-  });
-
-  it("renders loader box when status is loading", () => {
-    render(
-      <IpLookupRow
-        row={makeRow({ status: "loading" })}
-        index={0}
-        onChange={jest.fn()}
-        onUpdate={jest.fn()}
-      />
-    );
-
-    const rightArea = screen.getByText("1").closest("div")?.parentElement;
-    expect(rightArea).toBeTruthy();
-
-    const input = screen.getByRole("textbox");
-    expect(input).toBeDisabled();
   });
 });

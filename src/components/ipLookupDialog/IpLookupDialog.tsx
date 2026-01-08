@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { IpLookupList } from "../ipLookupList/IpLookupList";
 import type { IpLookupRowModel } from "../../types";
 import { colors } from "../../theme/colors";
+import { useNow } from "../../hooks/useNow/useNow";
 
 const styles = {
   page: {
@@ -110,6 +111,7 @@ export function IpLookupDialog() {
   };
 
   const isLoading = rows.some((row) => row.status === "loading");
+  const now = useNow(1000);
 
   return (
     <Box sx={styles.page}>
@@ -154,7 +156,7 @@ export function IpLookupDialog() {
           </Stack>
 
           <Box sx={styles.listScroll}>
-            <IpLookupList rows={rows} updateRow={updateRow} />
+            <IpLookupList rows={rows} updateRow={updateRow} now={now} />
           </Box>
         </DialogContent>
       </Dialog>

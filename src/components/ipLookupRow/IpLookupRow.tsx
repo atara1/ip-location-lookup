@@ -1,13 +1,14 @@
 import { TextField, Stack, Typography, Box, Avatar } from "@mui/material";
 import type { IpLookupRowModel } from "../../types";
 import { useIpLookup } from "../../hooks/useIpLookup/useIpLookup";
-import { useLocalTime } from "../../hooks/useLocalTime";
 import { colors } from "../../theme/colors";
-import { validateIpv4 } from "../../utils/ipValidation/ipValidation";
+import { formatLocalTime } from "../../utils/formatLocalTime";
+import { validateIp } from "../../utils/ipValidation/ipValidation";
 
 interface IpLookupRowProps {
   row: IpLookupRowModel;
   index: number;
+  now: Date;
   onChange(ip: string): void;
   onUpdate(data: Partial<IpLookupRowModel>): void;
 }
@@ -67,23 +68,25 @@ const styles = {
 export function IpLookupRow({
   row,
   index,
+  now,
   onChange,
   onUpdate,
 }: IpLookupRowProps) {
   const { lookup } = useIpLookup();
-  const localTime = useLocalTime(row.timezone);
+
+  const localTime = row.timezone ? formatLocalTime(now, row.timezone) : "";
 
   const flagUrl = row.countryCode
     ? `https://flagcdn.com/24x18/${row.countryCode.toLowerCase()}.png`
     : undefined;
 
   const onBlur = async (): Promise<void> => {
-    const result = validateIpv4(row.ip);
-    if (!result.ok) {
-      onUpdate({ status: "error", error: result.error });
-      return;
-    }
-    const ip = result.value;
+   const result = validateIp(row.ip);
+if (!result.ok) {
+  onUpdate({ status: "error", error: result.error });
+  return;
+}
+const ip = result.value;
 
     try {
       onUpdate({ status: "loading", error: undefined });
@@ -141,3 +144,7 @@ export function IpLookupRow({
     </Stack>
   );
 }
+function IpValidationResult(ip: string) {
+  throw new Error("Function not implemented.");
+}
+
