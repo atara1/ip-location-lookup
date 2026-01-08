@@ -25,8 +25,6 @@ const styles = {
     color: colors.indexText,
   },
   textField: {
-     flexShrink: 0,
-  minWidth: 180,
     "& input:-webkit-autofill": {
       WebkitBoxShadow: "0 0 0 1000px #fff inset",
     },
