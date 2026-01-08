@@ -25,6 +25,8 @@ const styles = {
     color: colors.indexText,
   },
   textField: {
+     flexShrink: 0,
+  minWidth: 180,
     "& input:-webkit-autofill": {
       WebkitBoxShadow: "0 0 0 1000px #fff inset",
     },
@@ -104,8 +106,10 @@ const ip = result.value;
     }
   };
 
-  return (
-    <Stack direction="row" spacing={2} alignItems="center" sx={styles.row}>
+return (
+  <Stack sx={styles.row} spacing={0.5}>
+    {/* Row line */}
+    <Stack direction="row" spacing={2} alignItems="center">
       <Avatar sx={styles.indexAvatar}>{index + 1}</Avatar>
 
       <TextField
@@ -123,10 +127,6 @@ const ip = result.value;
           <Box sx={styles.loader} />
         )}
 
-        {row.status === "error" && (
-          <Typography color="error">{row.error}</Typography>
-        )}
-
         {row.status === "success" && localTime && (
           <>
             {flagUrl && (
@@ -142,9 +142,25 @@ const ip = result.value;
         )}
       </Box>
     </Stack>
-  );
+
+    {/* Error line (below) */}
+    {row.status === "error" && (
+      <Typography
+        color="error"
+        variant="caption"
+        sx={{
+          pl: "calc(28px + 16px)", // Avatar width + spacing (approx)
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {row.error}
+      </Typography>
+    )}
+  </Stack>
+);
+
 }
-function IpValidationResult(ip: string) {
-  throw new Error("Function not implemented.");
-}
+
 
